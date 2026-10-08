@@ -1,0 +1,42 @@
+services:
+  database:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: bureau_crazy
+      POSTGRES_USER: symfony_user
+      POSTGRES_PASSWORD: symfony_secret_password
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  php:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    volumes:
+      - .:/var/www/html:cached
+    environment:
+      DATABASE_URL: "postgresql://symfony_user:symfony_secret_password@database:5432/bureau_crazy?serverVersion=16&charset=utf8"
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+
+  node:
+    image: node:20-alpine
+    working_dir: /var/www/html/frontend
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "5173:5173"
+    command: sh -c "npm install && npm run dev -- --host"
+
+volumes:
+  pgdata:
