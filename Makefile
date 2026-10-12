@@ -1,5 +1,13 @@
 .PHONY: test test-file cache-clear composer-require db-migrate fix-perms
 
+# Startet die Docker-Umgebung im Hintergrund
+up:
+	docker compose up -d
+
+# Fährt die Container sauber herunter, behält aber die Datenbank-Daten bei
+down:
+	docker compose down
+
 # Startet die komplette Testsuite im exakten Backend-Pfad des Containers
 test:
 	docker compose exec -w /var/www/html/backend php vendor/bin/phpunit
