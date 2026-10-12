@@ -18,6 +18,7 @@ class Deadline
     private ?UuidV7 $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Der Titel der Frist darf nicht leer sein.')]
     private ?string $title = null;
 
    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
