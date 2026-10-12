@@ -1,0 +1,14 @@
+{
+    // Sagt Intelephense, wo die eigentliche PHP-Infrastruktur liegt
+    "intelephense.environment.includePaths": [
+        "backend",
+        "backend/vendor"
+    ],
+    // Optional: Macht das Suchen im Monorepo performanter, indem das Node-Frontend ignoriert wird
+    "intelephense.files.exclude": [
+        "**/node_modules/**",
+        "**/vendor/**/tests/**"
+    ],
+    // Hilft VS Code, den Autoloader direkt zu finden
+    "php.suggest.basic": false
+}

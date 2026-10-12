@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="backend/tests/bootstrap.php"
+         colors="true"
+         cacheDirectory=".phpunit.cache">
+    
+    <testsuites>
+        <testsuite name="BureauCrazy Test Suite">
+            <directory>backend/tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <php>
+        <ini name="display_errors" value="1" />
+        <ini name="error_reporting" value="-1" />
+        <server name="APP_ENV" value="test" force="true" />
+        <server name="SHELL_VERBOSITY" value="-1" />
+        <server name="KERNEL_CLASS" value="App\Kernel" />
+    </php>
+</phpunit>
