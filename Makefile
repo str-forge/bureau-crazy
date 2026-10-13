@@ -23,8 +23,12 @@ composer-require:
 
 # Repariert die WSL2/VS Code Schreibrechte im Monorepo-Root
 fix-perms:
-	sudo chown -R $(shell whoami):www-data backend/
-	sudo chmod -R 775 backend/
+	@echo "🔧 Repariere WSL 2 & Docker Dateirechte..."
+	sudo chown -R $(shell whoami):www-data .
+	find . -type d -exec sudo chmod 775 {} +
+	find . -type f -exec sudo chmod 664 {} +
+	chmod +x backend/bin/console backend/bin/phpunit 2>/dev/null || true
+	@echo "✅ Rechte für Ordner (775) und Dateien (664) korrigiert!"
 
 # Leert den Symfony-Cache für Dev und Test im korrekten Container-Pfad
 cache-clear:
