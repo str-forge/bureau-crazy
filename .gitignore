@@ -5,3 +5,12 @@ node_modules/
 .env.development.local
 .env.test.local
 .env.production.local
+
+### > phpunit/phpunit ###
+.phpunit.cache/
+/backend/.phpunit.cache/
+/backend/build/
+/backend/coverage/
+/backend/phpunit.report.xml
+/backend/var/log/test.log
+### < phpunit/phpunit ###
