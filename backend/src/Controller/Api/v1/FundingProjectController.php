@@ -95,4 +95,21 @@ class FundingProjectController
 
         return new JsonResponse($data, Response::HTTP_OK);
     }
+    
+    #[Route('', name: 'api_v1_project_list', methods: ['GET'])]
+    public function list(\App\Repository\FundingProjectRepository $repository): JsonResponse
+    {
+        $projects = $repository->findAll();
+        $data = [];
+        
+        foreach ($projects as $project) {
+            $data[] = [
+                'id' => $project->getId(),
+                'title' => $project->getTitle(),
+                'budgetInCents' => $project->getBudget(),
+            ];
+        }
+
+        return new JsonResponse($data, \Symfony\Component\HttpFoundation\Response::HTTP_OK);
+    }
 }

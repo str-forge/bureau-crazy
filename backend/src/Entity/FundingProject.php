@@ -3,11 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\FundingProjectRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\UuidV7;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: FundingProjectRepository::class)]
 #[ORM\Table(name: 'funding_projects')]
