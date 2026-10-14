@@ -1,4 +1,4 @@
-.PHONY: up down status test test-file test-db-fresh composer-require cache-clear db-migrate lint lint-fix phpstan frontend-install frontend-dev frontend-logs frontend-fmt fix-perms
+.PHONY: up down status test test-file test-db-fresh composer-require cache-clear db-migrate lint lint-fix phpstan check frontend-install frontend-dev frontend-logs frontend-fmt fix-perms
 
 # ==============================================================================
 # 🐋 CONTAINER LIFECYCLE
@@ -61,6 +61,9 @@ lint-fix:
 phpstan:
 	docker compose exec -w /var/www/html/backend php vendor/bin/phpstan analyse -c phpstan.dist.neon
 
+# Startet die vollständige Pipeline (Linter, Typenanalyse und Testsuite) vor dem Commit
+check: lint phpstan test
+
 # ==============================================================================
 # 🪐 FRONTEND (Vite / Node / Tailwind)
 # ==============================================================================
@@ -86,19 +89,13 @@ frontend-fmt:
 # 🔧 RECHTE MANAGEMENT
 # ==============================================================================
 
-# Repariere die WSL2/VS Code Schreibrechte im gesamten Monorepo-Root
-# ==============================================================================
-# 🔧 RECHTE MANAGEMENT
-# ==============================================================================
-
 # Korrigiert die WSL2- und Docker-Dateirechte im gesamten Monorepo
 fix-perms:
 	@echo "🔧 Korrigiere WSL 2 & Docker Dateirechte..."
 	sudo chown -R $(shell whoami):www-data .
 	find . -type d -exec sudo chmod 775 {} +
 	find . -type f -not -path "*/node_modules/*" -exec sudo chmod 664 {} +
-	# Macht alle CLI-Tools und Vendor-Binaries in einem Rutsch ausführbar:
+	# Macht alle CLI-Tools und Vendor-Binaries ausführbar
 	chmod +x backend/bin/console backend/bin/phpunit backend/vendor/bin/* 2>/dev/null || true
 	docker compose exec php git config --global --add safe.directory /var/www/html || true
 	@echo "✅ Rechte für Ordner (775) und Dateien (664) korrigiert!"
-
