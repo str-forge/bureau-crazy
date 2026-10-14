@@ -51,4 +51,35 @@ class SecurityControllerTest extends WebTestCase
         $this->assertTrue($data['requires_2fa']);
         $this->assertArrayHasKey('pre_auth_token', $data);
     }
+        
+    public function testVerifyValid2faCodeReturnsAccessToken(): void
+    {
+        $user = new User('2fa-test@ngo.de');
+        $user->setTotpSecret('NY4A2GA4JVWGS4ZA');
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        $container = self::getContainer();
+        $securityManager = $container->get(\App\Service\SecurityManager::class);
+        $validCode = $securityManager->generateTotpCodeForTesting('NY4A2GA4JVWGS4ZA');
+
+        $this->client->request(
+            'POST',
+            '/api/v1/auth/2fa',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode([
+                'email' => '2fa-test@ngo.de',
+                'code' => $validCode
+            ])
+        );
+
+        $response = $this->client->getResponse();
+        $this->assertSame(200, $response->getStatusCode());
+        
+        $data = json_decode($response->getContent(), true);
+        $this->assertArrayHasKey('access_token', $data);
+    }
+
 }

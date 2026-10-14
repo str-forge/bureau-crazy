@@ -52,4 +52,45 @@ class SecurityController extends AbstractController
             'access_token' => $accessToken
         ], 200);
     }
+
+        #[Route('/api/v1/auth/2fa', name: 'api_auth_2fa', methods: ['POST'])]
+    public function verify2fa(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true) ?? [];
+        $email = $data['email'] ?? '';
+        $code = $data['code'] ?? '';
+
+        $user = $this->userRepository->findOneBy(['email' => $email]);
+
+        if (!$user) {
+            return new JsonResponse(['error' => 'User not found.'], 404);
+        }
+
+        if ($user->isLocked()) {
+            return new JsonResponse(['error' => 'Account is locked.'], 403);
+        }
+
+        $isValid = $this->securityManager->verifyTotpCode($user->getTotpSecret() ?? '', $code);
+
+        if (!$isValid) {
+            $user->incrementFailed2faAttempts();
+            $this->userRepository->getEntityManager()->flush();
+
+            if ($user->isLocked()) {
+                return new JsonResponse(['error' => 'Account locked due to too many failed attempts.'], 403);
+            }
+
+            return new JsonResponse(['error' => 'Invalid 2FA code.'], 401);
+        }
+
+        $user->resetFailed2faAttempts();
+        $this->userRepository->getEntityManager()->flush();
+
+        $accessToken = $this->securityManager->createJwtToken($user);
+
+        return new JsonResponse([
+            'access_token' => $accessToken
+        ], 200);
+    }
+
 }
