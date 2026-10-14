@@ -17,9 +17,11 @@ class SecurityController extends AbstractController
     public function __construct(
         private UserRepository $userRepository,
         private SecurityManager $securityManager,
-        private UserPasswordHasherInterface $passwordHasher
+        private UserPasswordHasherInterface $passwordHasher,
+        private \Doctrine\ORM\EntityManagerInterface $entityManager
     ) {
     }
+
 
     #[Route('/api/v1/auth/login', name: 'api_auth_login', methods: ['POST'])]
     public function login(Request $request): JsonResponse
@@ -53,7 +55,7 @@ class SecurityController extends AbstractController
         ], 200);
     }
 
-        #[Route('/api/v1/auth/2fa', name: 'api_auth_2fa', methods: ['POST'])]
+    #[Route('/api/v1/auth/2fa', name: 'api_auth_2fa', methods: ['POST'])]
     public function verify2fa(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true) ?? [];
@@ -74,7 +76,7 @@ class SecurityController extends AbstractController
 
         if (!$isValid) {
             $user->incrementFailed2faAttempts();
-            $this->userRepository->getEntityManager()->flush();
+            $this->entityManager->flush();
 
             if ($user->isLocked()) {
                 return new JsonResponse(['error' => 'Account locked due to too many failed attempts.'], 403);
@@ -84,7 +86,7 @@ class SecurityController extends AbstractController
         }
 
         $user->resetFailed2faAttempts();
-        $this->userRepository->getEntityManager()->flush();
+        $this->entityManager->flush();
 
         $accessToken = $this->securityManager->createJwtToken($user);
 

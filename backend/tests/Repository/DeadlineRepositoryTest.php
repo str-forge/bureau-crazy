@@ -20,8 +20,10 @@ class DeadlineRepositoryTest extends KernelTestCase
         // Erst den Symfony-Kernel booten, um Zugriff auf Dependency Injection zu haben
         self::bootKernel();
 
-        /** @var EntityManagerInterface $entityManager */
-        $this->entityManager = self::getContainer()->get('doctrine')->getManager();
+        $container = self::getContainer();
+
+        // RFC-Fix: Zuweisung direkt auf die Klassen-Eigenschaft!
+        $this->entityManager = $container->get(EntityManagerInterface::class);
     }
 
     public function testPersistAndRetrieveDeadlineWithEnumAndProject(): void

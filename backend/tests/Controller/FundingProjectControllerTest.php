@@ -13,7 +13,10 @@ use Symfony\Component\BrowserKit\AbstractBrowser;
 
 class FundingProjectControllerTest extends WebTestCase
 {
-    private static AbstractBrowser $client;
+    /**
+     * @var \Symfony\Bundle\FrameworkBundle\KernelBrowser
+     */
+    private static $client;
 
     private EntityManagerInterface $entityManager;
 

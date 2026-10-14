@@ -13,6 +13,10 @@ class DeepSeekService
         private string $apiKey
     ) {
     }
+
+    /**
+     * @return array<string, mixed>
+     */
     public function extractDeadlines(string $text): array
     {
         $response = $this->httpClient->request('POST', 'https://deepseek.com', [
