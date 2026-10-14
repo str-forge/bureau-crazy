@@ -1,4 +1,4 @@
-.PHONY: up down test test-file composer-require db-migrate fix-perms cache-clear frontend-install frontend-dev frontend-logs frontend-fmt
+.PHONY: up down status test test-file test-db-fresh composer-require cache-clear db-migrate lint lint-fix phpstan frontend-install frontend-dev frontend-logs frontend-fmt fix-perms
 
 # ==============================================================================
 # 🐋 CONTAINER LIFECYCLE
@@ -28,13 +28,13 @@ test:
 test-file:
 	docker compose exec -w /var/www/html/backend php bin/phpunit $(file)
 
-# Rebuilds the PostgreSQL test database from scratch using migrations
+# Baut die PostgreSQL-Testdatenbank über Migrationen neu auf
 test-db-fresh:
 	docker compose exec php php backend/bin/console doctrine:database:drop --env=test --force --if-exists
 	docker compose exec php php backend/bin/console doctrine:database:create --env=test
 	docker compose exec php php backend/bin/console doctrine:migrations:migrate --env=test --no-interaction
 
-# Installiert Composer-Pakete absolut rechte- und pfadsicher (Nutzung: make composer-require pkg="symfony/browser-kit --dev")
+# Installiert Composer-Pakete rechte- und pfadsicher (Nutzung: make composer-require pkg="symfony/browser-kit --dev")
 composer-require:
 	docker compose exec -u root php chown -R www-data:www-data /var/www/html/backend
 	docker compose exec -u www-data -w /var/www/html/backend php composer require $(pkg)
@@ -48,6 +48,18 @@ cache-clear:
 db-migrate:
 	docker compose exec -w /var/www/html/backend php php bin/console doctrine:migrations:migrate --no-interaction
 	docker compose exec -w /var/www/html/backend php php bin/console doctrine:migrations:migrate --env=test --no-interaction
+
+# Analysiert den Code auf Formatierungsfehler und Leerzeichen
+lint:
+	docker compose exec -w /var/www/html/backend php vendor/bin/phpcs --standard=PSR12 src tests
+
+# Korrigiert kosmetische Formatierungsfehler automatisch
+lint-fix:
+	docker compose exec -w /var/www/html/backend php vendor/bin/phpcbf --standard=PSR12 src tests
+
+# Prüft Naming, Logikfehler und Typsicherheit
+phpstan:
+	docker compose exec -w /var/www/html/backend php vendor/bin/phpstan analyse -c phpstan.dist.neon
 
 # ==============================================================================
 # 🪐 FRONTEND (Vite / Node / Tailwind)
@@ -75,14 +87,18 @@ frontend-fmt:
 # ==============================================================================
 
 # Repariere die WSL2/VS Code Schreibrechte im gesamten Monorepo-Root
+# ==============================================================================
+# 🔧 RECHTE MANAGEMENT
+# ==============================================================================
+
+# Korrigiert die WSL2- und Docker-Dateirechte im gesamten Monorepo
 fix-perms:
 	@echo "🔧 Korrigiere WSL 2 & Docker Dateirechte..."
 	sudo chown -R $(shell whoami):www-data .
 	find . -type d -exec sudo chmod 775 {} +
-	# Schließt node_modules-Ordner vom 664-Datei-chmod aus:
 	find . -type f -not -path "*/node_modules/*" -exec sudo chmod 664 {} +
-	chmod +x backend/bin/console backend/bin/phpunit 2>/dev/null || true
+	# Macht alle CLI-Tools und Vendor-Binaries in einem Rutsch ausführbar:
+	chmod +x backend/bin/console backend/bin/phpunit backend/vendor/bin/* 2>/dev/null || true
 	docker compose exec php git config --global --add safe.directory /var/www/html || true
 	@echo "✅ Rechte für Ordner (775) und Dateien (664) korrigiert!"
-
 
