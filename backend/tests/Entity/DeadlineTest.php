@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Tests\Entity; // Angepasster Namespace für deinen bestehenden Ordner
+declare(strict_types=1);
+
+namespace App\Tests\Entity;
 
 use App\Entity\FundingProject;
 use App\Entity\Deadline;
