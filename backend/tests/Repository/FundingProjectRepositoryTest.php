@@ -20,7 +20,7 @@ class FundingProjectRepositoryTest extends KernelTestCase
     {
         self::bootKernel();
         $container = self::getContainer();
-        
+
         $this->entityManager = $container->get(EntityManagerInterface::class);
         $this->repository = $container->get(FundingProjectRepository::class);
 
@@ -30,7 +30,7 @@ class FundingProjectRepositoryTest extends KernelTestCase
 
     public function testPersistAndRetrieveProject(): void
     {
-        // Falls dein Konstruktor Argumente schluckt, ist das okay. 
+        // Falls dein Konstruktor Argumente schluckt, ist das okay.
         // Zur Sicherheit setzen wir die Werte über die Setter fest:
         $project = new FundingProject();
         $project->setTitle('Muster-NGO Digitalisierung');
@@ -38,11 +38,11 @@ class FundingProjectRepositoryTest extends KernelTestCase
 
         $this->entityManager->persist($project);
         $this->entityManager->flush();
-        
+
         $this->entityManager->clear();
 
         $savedProject = $this->repository->find($project->getId());
-        
+
         $this->assertNotNull($savedProject);
         $this->assertSame('Muster-NGO Digitalisierung', $savedProject->getTitle());
         $this->assertSame(500000, $savedProject->getBudget());
@@ -59,7 +59,7 @@ class FundingProjectRepositoryTest extends KernelTestCase
         $deadline->setTitle('Zwischenbericht');
         $deadline->setDueDate(new \DateTimeImmutable('+1 month'));
         $deadline->setType(DeadlineType::PROGRESS_REPORT); // Hier dein Enum nutzen!
-        
+
         $project->addDeadline($deadline);
 
         $this->entityManager->persist($project);

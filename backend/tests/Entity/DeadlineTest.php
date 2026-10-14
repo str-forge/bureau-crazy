@@ -9,7 +9,6 @@ use App\Entity\Deadline;
 use App\Enum\DeadlineType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-
 class DeadlineTest extends KernelTestCase
 {
     public function testCanCreateDeadlineAndAssociateWithProject(): void
@@ -18,7 +17,7 @@ class DeadlineTest extends KernelTestCase
         $project = new FundingProject();
         $deadline = new Deadline();
         $targetDate = new \DateTimeImmutable('+30 days');
-        
+
         // Act
         $deadline->setTitle('Finaler Verwendungsnachweis 2026')
             ->setDueDate($targetDate)
@@ -37,13 +36,13 @@ class DeadlineTest extends KernelTestCase
     {
         // 1. Arrange: Symfony Kernel statisch booten
         self::bootKernel();
-        
+
         // Den Service-Container statisch über self:: abrufen
         $validator = self::getContainer()->get('validator');
 
         $project = new FundingProject();
         $deadline = new Deadline();
-        
+
         // Ein Datum in der Vergangenheit (gestern)
         $pastDate = new \DateTimeImmutable('-1 day');
 
@@ -57,10 +56,10 @@ class DeadlineTest extends KernelTestCase
 
         // 3. Assert: Wir erwarten exakt einen Validierungsfehler
         $this->assertCount(1, $errors, 'Der Validator hätte das Datum in der Vergangenheit blockieren müssen.');
-        
+
         // Wir prüfen, ob die Fehlermeldung mit unserem Text übereinstimmt
         $this->assertSame(
-            'Das Frist-Datum darf nicht in der Vergangenheit liegen.', 
+            'Das Frist-Datum darf nicht in der Vergangenheit liegen.',
             $errors->get(0)->getMessage()
         );
     }

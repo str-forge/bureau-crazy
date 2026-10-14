@@ -18,7 +18,7 @@ class UserRepositoryTest extends KernelTestCase
     {
         self::bootKernel();
         $container = self::getContainer();
-        
+
         $this->entityManager = $container->get(EntityManagerInterface::class);
         $this->repository = $container->get(UserRepository::class);
 
@@ -35,7 +35,7 @@ class UserRepositoryTest extends KernelTestCase
         $this->entityManager->clear();
 
         $savedUser = $this->repository->findOneBy(['email' => 'test-repo@ngo.de']);
-        
+
         $this->assertNotNull($savedUser);
         $this->assertSame('test-repo@ngo.de', $savedUser->getEmail());
     }
@@ -54,7 +54,7 @@ class UserRepositoryTest extends KernelTestCase
         $loadedUser = $this->repository->find($user->getId());
         $this->assertSame('new_super_hash', $loadedUser->getPassword());
     }
-    
+
     protected function tearDown(): void
     {
         parent::tearDown();

@@ -18,16 +18,16 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[Route('/api/v1/deadlines')]
 class DeadlineController
 {
-	public function __construct(
-		private readonly EntityManagerInterface $entityManager,
-		private readonly ValidatorInterface $validator,
-	) {
-	}
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ValidatorInterface $validator,
+    ) {
+    }
 
-	#[Route('', name: 'api_v1_deadlines_create', methods: ['POST'])]
-	public function create(Request $request): JsonResponse
-	{
-		// 1. JSON-Payload auslesen und fallbacksicher parsen
+    #[Route('', name: 'api_v1_deadlines_create', methods: ['POST'])]
+    public function create(Request $request): JsonResponse
+    {
+        // 1. JSON-Payload auslesen und fallbacksicher parsen
         $content = json_decode($request->getContent(), true);
 
         if (!is_array($content)) {
@@ -37,7 +37,7 @@ class DeadlineController
         // API-Schutzschalter vor dem Verarbeiten
         if (empty($content) || empty($content['project_id']) || empty($content['title'])) {
             return new JsonResponse(
-                ['error' => 'Ungültige Daten, Projekt-ID oder Titel fehlt.'], 
+                ['error' => 'Ungültige Daten, Projekt-ID oder Titel fehlt.'],
                 Response::HTTP_BAD_REQUEST
             );
         }
@@ -58,7 +58,7 @@ class DeadlineController
         // 3. Neue Deadline instanziieren und befüllen
         $deadline = new Deadline();
         $deadline->setTitle($content['title']);
-        
+
         // Datum aus ISO-8601-String konvertieren
         if (!empty($content['due_date'])) {
             $deadline->setDueDate(new \DateTimeImmutable($content['due_date']));
@@ -68,7 +68,7 @@ class DeadlineController
         if (!empty($content['type'])) {
             $typeString = strtolower($content['type']);
             $typeEnum = DeadlineType::tryFrom($typeString);
-            
+
             if (!$typeEnum) {
                 $typeEnum = DeadlineType::tryFrom(strtoupper($typeString));
             }

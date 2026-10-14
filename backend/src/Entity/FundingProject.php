@@ -25,7 +25,12 @@ class FundingProject
     #[ORM\Column(type: Types::INTEGER)]
     private int $budget = 0; // Speicherung in Cent (z.B. 500000 = 5000,00 €)
 
-    #[ORM\OneToMany(mappedBy: 'fundingProject', targetEntity: Deadline::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OneToMany(
+        mappedBy: 'fundingProject',
+        targetEntity: Deadline::class,
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
     private Collection $deadlines;
 
     public function __construct()

@@ -13,7 +13,7 @@ class FundingProjectTest extends TestCase
     {
         // Da die Klasse noch nicht existiert, MUSS das in ein TDD-Rot laufen!
         $project = new FundingProject();
-        
+
         $project->setTitle('Digitalisierung NGO');
         $project->setBudget(250000); // 2500,00 € in Cent
 

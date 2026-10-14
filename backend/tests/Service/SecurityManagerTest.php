@@ -16,9 +16,9 @@ class SecurityManagerTest extends TestCase
         $manager = new SecurityManager('test_secret_12345');
 
         $token = $manager->createJwtToken($user);
-        
+
         $this->assertNotEmpty($token);
-        
+
         $parts = explode('.', $token);
         $this->assertCount(3, $parts);
 
@@ -26,7 +26,7 @@ class SecurityManagerTest extends TestCase
         $this->assertSame('auth-test@ngo.de', $payload['email']);
         $this->assertContains('ROLE_USER', $payload['roles']);
     }
-    
+
     public function testVerifyTotpCodeValidatesSignature(): void
     {
         $manager = new SecurityManager('test_secret_12345');

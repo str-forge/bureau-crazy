@@ -14,7 +14,7 @@ class SecurityControllerTest extends WebTestCase
     private KernelBrowser $client;
     private EntityManagerInterface $entityManager;
 
-       protected function setUp(): void
+    protected function setUp(): void
     {
         $this->client = self::createClient();
         $container = self::getContainer();
@@ -23,12 +23,12 @@ class SecurityControllerTest extends WebTestCase
         $this->entityManager->createQuery('DELETE FROM App\Entity\User')->execute();
     }
 
-        public function testLoginWithValidCredentialsReturnsPreAuthToken(): void
+    public function testLoginWithValidCredentialsReturnsPreAuthToken(): void
     {
         $user = new User('login-test@ngo.de');
         $user->setPassword(password_hash('password123', PASSWORD_BCRYPT));
         $user->setTotpSecret('NY4A2GA4JVWGS4ZA');
-        
+
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
@@ -39,19 +39,19 @@ class SecurityControllerTest extends WebTestCase
             [],
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
-                'email' => 'login-test@ngo.de',
-                'password' => 'password123'
+            'email' => 'login-test@ngo.de',
+            'password' => 'password123'
             ])
         );
 
         $response = $this->client->getResponse();
         $this->assertSame(200, $response->getStatusCode());
-        
+
         $data = json_decode($response->getContent(), true);
         $this->assertTrue($data['requires_2fa']);
         $this->assertArrayHasKey('pre_auth_token', $data);
     }
-        
+
     public function testVerifyValid2faCodeReturnsAccessToken(): void
     {
         $user = new User('2fa-test@ngo.de');
@@ -77,9 +77,8 @@ class SecurityControllerTest extends WebTestCase
 
         $response = $this->client->getResponse();
         $this->assertSame(200, $response->getStatusCode());
-        
+
         $data = json_decode($response->getContent(), true);
         $this->assertArrayHasKey('access_token', $data);
     }
-
 }

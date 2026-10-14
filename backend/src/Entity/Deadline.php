@@ -23,7 +23,7 @@ class Deadline
     #[Assert\NotBlank(message: 'Der Titel der Frist darf nicht leer sein.')]
     private ?string $title = null;
 
-   #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Assert\NotBlank(message: 'Ein Frist-Datum ist zwingend erforderlich.')]
     #[Assert\GreaterThanOrEqual(
         value: 'today',

@@ -14,13 +14,12 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api/v1/projects')]
 class FundingProjectController
 {
-	public function __construct(
-		private readonly EntityManagerInterface $entityManager,
-	){
-        
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+    ) {
     }
 
-	 #[Route('', name: 'api_v1_project_create', methods: ['POST'])]
+     #[Route('', name: 'api_v1_project_create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
         // 1. Rohen JSON-Body aus dem Request fangen und dekodieren
@@ -29,7 +28,7 @@ class FundingProjectController
         // API-Schutzschalter: Einfache Validierung (Subtask 3.4 Vorbereitung)
         if (!$content || empty($content['title'])) {
             return new JsonResponse(
-                ['error' => 'Ungültige Daten oder fehlender Titel.'], 
+                ['error' => 'Ungültige Daten oder fehlender Titel.'],
                 Response::HTTP_BAD_REQUEST
             );
         }
@@ -37,7 +36,7 @@ class FundingProjectController
         // 2. Neue Entität instanziieren und befüllen
         $project = new FundingProject();
         $project->setTitle($content['title']);
-        
+
         // Flexibler Budget-Setter (Kompatibilität zu Tag 1)
         $budget = isset($content['budget_in_cents']) ? (int)$content['budget_in_cents'] : 0;
         if (method_exists($project, 'setBudgetInCents')) {
@@ -52,8 +51,8 @@ class FundingProjectController
 
         // FIX: Robuste ID-Auflösung (Abfangjäger für Strings und Objekte)
         $idRaw = $project->getId();
-        $idString = is_object($idRaw) && method_exists($idRaw, 'toRfc4122') 
-            ? $idRaw->toRfc4122() 
+        $idString = is_object($idRaw) && method_exists($idRaw, 'toRfc4122')
+            ? $idRaw->toRfc4122()
             : (string)$idRaw;
 
         $responseData = [
@@ -97,13 +96,13 @@ class FundingProjectController
 
         return new JsonResponse($data, Response::HTTP_OK);
     }
-    
+
     #[Route('', name: 'api_v1_project_list', methods: ['GET'])]
     public function list(\App\Repository\FundingProjectRepository $repository): JsonResponse
     {
         $projects = $repository->findAll();
         $data = [];
-        
+
         foreach ($projects as $project) {
             $data[] = [
                 'id' => $project->getId(),

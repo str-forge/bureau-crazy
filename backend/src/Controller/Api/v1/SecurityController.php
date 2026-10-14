@@ -92,5 +92,4 @@ class SecurityController extends AbstractController
             'access_token' => $accessToken
         ], 200);
     }
-
 }
