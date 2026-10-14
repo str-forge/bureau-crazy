@@ -26,3 +26,8 @@ services:
         arguments:
             $jwtSecret: '%env(APP_SECRET)%'
         public: true
+        
+    App\Service\DeepSeekService:
+        arguments:
+            $apiKey: '%env(DEEPSEEK_API_KEY)%'
+        public: true
