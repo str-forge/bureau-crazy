@@ -28,6 +28,12 @@ test:
 test-file:
 	docker compose exec -w /var/www/html/backend php bin/phpunit $(file)
 
+# Rebuilds the PostgreSQL test database from scratch using migrations
+test-db-fresh:
+	docker compose exec php php backend/bin/console doctrine:database:drop --env=test --force --if-exists
+	docker compose exec php php backend/bin/console doctrine:database:create --env=test
+	docker compose exec php php backend/bin/console doctrine:migrations:migrate --env=test --no-interaction
+
 # Installiert Composer-Pakete absolut rechte- und pfadsicher (Nutzung: make composer-require pkg="symfony/browser-kit --dev")
 composer-require:
 	docker compose exec -u root php chown -R www-data:www-data /var/www/html/backend
