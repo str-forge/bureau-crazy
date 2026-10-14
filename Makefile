@@ -76,11 +76,13 @@ frontend-fmt:
 
 # Repariere die WSL2/VS Code Schreibrechte im gesamten Monorepo-Root
 fix-perms:
-	@echo "🔧 Repariere WSL 2 & Docker Dateirechte präzise..."
+	@echo "🔧 Korrigiere WSL 2 & Docker Dateirechte..."
 	sudo chown -R $(shell whoami):www-data .
 	find . -type d -exec sudo chmod 775 {} +
-	# Schließt node_modules-Ordner vom radikalen 664-Datei-chmod aus:
+	# Schließt node_modules-Ordner vom 664-Datei-chmod aus:
 	find . -type f -not -path "*/node_modules/*" -exec sudo chmod 664 {} +
 	chmod +x backend/bin/console backend/bin/phpunit 2>/dev/null || true
-	@echo "✅ Rechte für Ordner (775) und Dateien (664) präzise korrigiert!"
+	docker compose exec php git config --global --add safe.directory /var/www/html || true
+	@echo "✅ Rechte für Ordner (775) und Dateien (664) korrigiert!"
+
 
