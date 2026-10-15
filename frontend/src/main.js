@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (kiForm) kiForm.addEventListener("submit", handleKiSubmit);
 
     loadDashboardData();
+
     async function loadDashboardData() {
         try {
             listContainer.innerHTML = "<div class font-mono>🔄 Verbinde mit API...</div>";
@@ -30,21 +31,29 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             listContainer.innerHTML = projects.map(p => `
                 <div data-id="${p.id}" class="project-card p-4 border border-slate-200 rounded-xl bg-slate-50 flex justify-between items-center shadow-sm cursor-pointer hover:border-slate-400 transition-all">
-                    <div>
+                    <div class="flex-1">
                         <h3 class="font-semibold text-slate-900">${p.title}</h3>
-                        <p class="text-xs text-slate-400 font-mono">${p.id}</p>
+                        <p class="text-xs text-slate-400 font-mono mb-2">${p.id}</p>
+                        <!-- iCal Download Link -->
+                        <a href="http://localhost:8080/api/v1/projects/${p.id}/ical" 
+                           class="inline-flex items-center gap-1 text-xs font-medium text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-100 border border-slate-200 rounded-md px-2 py-1 shadow-sm transition-colors stop-propagation" 
+                           download>
+                           📅 iCal Export
+                        </a>
                     </div>
-                    <span class="text-sm font-semibold bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg">
+                    <span class="text-sm font-semibold bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg self-start">
                         ${(p.budgetInCents / 100).toFixed(2)} EUR
                     </span>
                 </div>
             `).join("");
+
 
             initProjectCardEvents();
         } catch (e) {
             listContainer.innerHTML = "<div class=\"p-4 bg-red-50 text-red-700 rounded-xl text-xs\">🚨 API nicht erreichbar</div>";
         }
     }
+
     function initProjectCardEvents() {
         const cards = listContainer.querySelectorAll(".project-card");
         cards.forEach(card => {
@@ -61,6 +70,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     kiStatusHint.textContent = `Aktiv für Projekt: ${card.querySelector("h3")?.textContent}`;
                     kiStatusHint.classList.replace("text-slate-400", "text-emerald-600");
                 }
+
+                // Verhindert, dass der iCal-Download den Zeilenklick für das KI-Formular auslöst
+                listContainer.querySelectorAll(".stop-propagation").forEach(link => {
+                    link.addEventListener("click", (e) => e.stopPropagation());
+                });
             });
         });
     }
@@ -83,6 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
             kiSubmitBtn.textContent = "Analyse starten";
         }
     }
+
     async function handleFormSubmit(e) {
         e.preventDefault();
         const title = titleInput.value.trim();
