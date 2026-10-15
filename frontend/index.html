@@ -1,58 +1,95 @@
 <!DOCTYPE html>
 <html lang="de">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BureauCrazy 🚀 - Fördermittel-Lotse</title>
-  </head>
-  <body class="bg-slate-50 text-slate-900 antialiased min-h-screen">
-    <div id="app" class="flex flex-col min-h-screen">
-      
-      <!-- Top Navigation: Passt sich dem Viewport an -->
-      <header class="bg-slate-900 text-white p-4 shadow-md flex justify-between items-center">
-        <h1 class="text-xl font-bold tracking-tight">BureauCrazy ⚖️🤖</h1>
-        <span class="text-xs bg-slate-800 px-3 py-1 rounded-full border border-slate-700 font-mono text-emerald-400">Tag 4: SPA Connected</span>
-      </header>
 
-      <!-- Main Layout Responsive Grid -->
-      <!-- Mobil: 1 Spalte | Tablet/Desktop: 3 Spalten (Verhältnis 1:2) -->
-      <main class="flex-1 p-4 max-w-7xl w-full mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
-        
-        <!-- Linke Spalte: Projekt anlegen (Formular) -->
-        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 h-fit">
-          <h2 class="text-lg font-semibold mb-4 text-slate-900">Neues Förderprojekt</h2>
-          <form id="project-form" class="space-y-4">
-            <div>
-              <label class="block text-xs font-medium uppercase tracking-wider text-slate-500 mb-1">Projektname</label>
-              <input type="text" id="proj-title" required class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:outline-none text-sm transition-all" placeholder="z.B. Jugendtreff Digital" />
-            </div>
-            <div>
-              <label class="block text-xs font-medium uppercase tracking-wider text-slate-500 mb-1">Budget (in EUR)</label>
-              <input type="number" id="proj-budget" required step="0.01" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:outline-none text-sm transition-all" placeholder="50000.00" />
-            </div>
-            <button type="submit" class="w-full bg-slate-950 hover:bg-slate-800 text-white font-medium py-2 rounded-lg transition-colors text-sm shadow-sm">
-              Projekt anlegen
-            </button>
-          </form>
-        </section>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BureauCrazy 🚀 - Fördermittel-Lotse</title>
+</head>
 
-        <!-- Rechte Spalte: Projektliste & Fristen (Nimmt auf größeren Screens 2/3 ein) -->
-        <section class="md:col-span-2 space-y-6">
-          <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-            <div class="flex justify-between items-center mb-4">
-              <h2 class="text-lg font-semibold text-slate-900">Aktive Förderprojekte</h2>
-              <button id="btn-reload" class="text-xs font-mono text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded transition-colors">🔄 Laden</button>
-            </div>
-            
-            <!-- Dynamischer Content von der Symfony-API -->
-            <div id="project-list" class="space-y-4">
-              <p class="text-sm text-slate-400 italic">Warte auf API-Verbindung...</p>
-            </div>
+<body class="bg-slate-50 text-slate-900 antialiased min-h-screen">
+  <div id="app" class="flex flex-col min-h-screen">
+
+    <!-- Top Navigation: Passt sich dem Viewport an -->
+    <!-- Top Navigation -->
+    <header class="bg-slate-900 text-white p-4 shadow-md flex justify-between items-center">
+      <h1 class="text-xl font-bold tracking-tight">BureauCrazy ⚖️🤖</h1>
+    </header>
+
+    <!-- Main Layout Responsive Grid -->
+    <!-- Mobil: 1 Spalte | Tablet/Desktop: 3 Spalten (Verhältnis 1:2) -->
+    <main class="flex-1 p-4 max-w-7xl w-full mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+
+      <!-- Linke Spalte: Projekt anlegen (Formular) -->
+      <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 h-fit">
+        <h2 class="text-lg font-semibold mb-4 text-slate-900">Neues Förderprojekt</h2>
+        <form id="project-form" class="space-y-4">
+          <div>
+            <label class="block text-xs font-medium uppercase tracking-wider text-slate-500 mb-1">Projektname</label>
+            <input type="text" id="proj-title" required
+              class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:outline-none text-sm transition-all"
+              placeholder="z.B. Jugendtreff Digital" />
           </div>
-        </section>
+          <div>
+            <label class="block text-xs font-medium uppercase tracking-wider text-slate-500 mb-1">Budget (in
+              EUR)</label>
+            <input type="number" id="proj-budget" required step="0.01"
+              class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:outline-none text-sm transition-all"
+              placeholder="50000.00" />
+          </div>
+          <button type="submit"
+            class="w-full bg-slate-950 hover:bg-slate-800 text-white font-medium py-2 rounded-lg transition-colors text-sm shadow-sm">
+            Projekt anlegen
+          </button>
+        </form>
 
-      </main>
-    </div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+        <!-- KI-Analyse Sektion für Richtlinientexte -->
+        <div class="border-t border-slate-100 pt-6 mt-6">
+          <h3 class="text-sm font-semibold mb-3 text-slate-900 flex items-center gap-1.5">
+            🤖 KI-Fristen-Extraktion
+          </h3>
+          <form id="ki-analysis-form" class="space-y-4">
+            <input type="hidden" id="ki-project-id" value="" />
+            <div>
+              <label class="block text-xs font-medium uppercase tracking-wider text-slate-500 mb-1">
+                Richtlinientext / Ausschreibung
+              </label>
+              <textarea id="ki-guideline-text" required rows="5"
+                class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:outline-none text-sm transition-all resize-none font-sans"
+                placeholder="Füge hier den offiziellen Ausschreibungstext oder Absätze aus den Förderrichtlinien ein..."></textarea>
+            </div>
+            <button type="submit" id="ki-submit-btn" disabled
+              class="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-medium py-2 rounded-lg transition-colors text-sm shadow-sm flex justify-center items-center gap-2">
+              Analyse starten
+            </button>
+            <p id="ki-status-hint" class="text-xs text-slate-400 italic text-center mt-1">
+              Wähle ein Projekt aus der Liste, um die KI-Analyse freizuschalten.
+            </p>
+          </form>
+        </div>
+
+      </section>
+
+      <!-- Rechte Spalte: Projektliste & Fristen (Nimmt auf größeren Screens 2/3 ein) -->
+      <section class="md:col-span-2 space-y-6">
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold text-slate-900">Aktive Förderprojekte</h2>
+            <button id="btn-reload"
+              class="text-xs font-mono text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded transition-colors">🔄
+              Laden</button>
+          </div>
+
+          <!-- Dynamischer Content von der Symfony-API -->
+          <div id="project-list" class="space-y-4">
+            <p class="text-sm text-slate-400 italic">Warte auf API-Verbindung...</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+
 </html>
