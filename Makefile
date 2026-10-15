@@ -30,9 +30,9 @@ test-file:
 
 # Baut die PostgreSQL-Testdatenbank über Migrationen neu auf
 test-db-fresh:
-	docker compose exec php php backend/bin/console doctrine:database:drop --env=test --force --if-exists
-	docker compose exec php php backend/bin/console doctrine:database:create --env=test
-	docker compose exec php php backend/bin/console doctrine:migrations:migrate --env=test --no-interaction
+	docker compose exec -w /var/www/html/backend php php bin/console doctrine:database:drop --env=test --force --if-exists
+	docker compose exec -w /var/www/html/backend php php bin/console doctrine:database:create --env=test
+	docker compose exec -w /var/www/html/backend php php bin/console doctrine:migrations:migrate --env=test --no-interaction
 
 # Installiert Composer-Pakete rechte- und pfadsicher (Nutzung: make composer-require pkg="symfony/browser-kit --dev")
 composer-require:
@@ -98,7 +98,7 @@ fix-perms:
 	@echo "🔧 Korrigiere WSL 2 & Docker Dateirechte..."
 	sudo chown -R $(shell whoami):www-data .
 	find . -type d -exec sudo chmod 775 {} +
-	find . -type f -not -path "*/node_modules/*" -exec sudo chmod 664 {} +
+	find . -type f -not -path "*/node_modules/*" -not -path "*/.git/*" -exec sudo chmod 664 {} +
 	# Macht alle CLI-Tools und Vendor-Binaries ausführbar
 	chmod +x backend/bin/console backend/bin/phpunit backend/vendor/bin/* 2>/dev/null || true
 	docker compose exec php git config --global --add safe.directory /var/www/html || true

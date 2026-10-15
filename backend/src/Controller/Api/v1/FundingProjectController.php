@@ -83,9 +83,11 @@ class FundingProjectController
                 'id' => $deadline->getId(),
                 'title' => $deadline->getTitle(),
                 'due_date' => $deadline->getDueDate()->format(\DateTimeInterface::ATOM),
-                'type' => $deadline->getType()->value
+                'type' => $deadline->getType()->value,
+                'risk_level' => $deadline->getRiskLevel()->value // NEU
             ];
         }
+
 
         $data = [
             'id' => $project->getId(),

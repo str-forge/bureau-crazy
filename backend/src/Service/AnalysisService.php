@@ -7,8 +7,8 @@ namespace App\Service;
 use App\Entity\FundingProject;
 use App\Entity\Deadline;
 use App\Enum\DeadlineType;
+use App\Enum\RiskLevel;
 use Doctrine\ORM\EntityManagerInterface;
-use DateTimeImmutable;
 
 class AnalysisService
 {
@@ -20,17 +20,21 @@ class AnalysisService
 
     public function analyzeAndApply(FundingProject $project, string $text): void
     {
-        $data = $this->deepSeekService->extractDeadlines($text);
+        $aiData = $this->deepSeekService->extractDeadlines($text);
 
-        if (!isset($data['deadlines']) || !is_array($data['deadlines'])) {
-            return;
-        }
-
-        foreach ($data['deadlines'] as $deadlineData) {
+        foreach ($aiData['deadlines'] ?? [] as $extracted) {
             $deadline = new Deadline();
-            $deadline->setTitle($deadlineData['title']);
-            $deadline->setDueDate(new DateTimeImmutable($deadlineData['date']));
-            $deadline->setType(DeadlineType::from($deadlineData['type']));
+            $deadline->setTitle($extracted['title'] ?? 'Unbenannte Frist');
+            $deadline->setDueDate(new \DateTimeImmutable($extracted['date'] ?? 'now'));
+
+            // Fallback auf PROGRESS_REPORT, falls die KI einen unklaren String liefert
+            $type = DeadlineType::tryFrom($extracted['type'] ?? '') ?? DeadlineType::PROGRESS_REPORT;
+            $deadline->setType($type);
+
+            // Risiko-Level zuweisen
+            $riskStr = $extracted['risk_level'] ?? 'low';
+            $risk = RiskLevel::tryFrom($riskStr) ?? RiskLevel::LOW;
+            $deadline->setRiskLevel($risk);
 
             $project->addDeadline($deadline);
             $this->entityManager->persist($deadline);

@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 class AnalysisServiceTest extends KernelTestCase
 {
     private EntityManagerInterface $entityManager;
+
     protected function setUp(): void
     {
         self::bootKernel();
@@ -26,6 +27,7 @@ class AnalysisServiceTest extends KernelTestCase
         parent::tearDown();
         $this->entityManager->close();
     }
+
     public function testAnalyzeAndMapSuccessfully(): void
     {
         $project = new FundingProject();
@@ -38,7 +40,8 @@ class AnalysisServiceTest extends KernelTestCase
             'deadlines' => [[
                 'title' => 'Zwischennachweis 2026',
                 'date' => '2026-12-31',
-                'type' => 'progress_report'
+                'type' => 'progress_report',
+                'risk_level' => 'high' // NEU
             ]]
         ];
 
@@ -56,5 +59,6 @@ class AnalysisServiceTest extends KernelTestCase
         $deadline = $refreshed->getDeadlines()->first();
         $this->assertSame('Zwischennachweis 2026', $deadline->getTitle());
         $this->assertSame(DeadlineType::PROGRESS_REPORT, $deadline->getType());
+        $this->assertSame(\App\Enum\RiskLevel::HIGH, $deadline->getRiskLevel());
     }
 }

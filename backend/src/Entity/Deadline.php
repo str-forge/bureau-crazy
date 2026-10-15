@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Enum\DeadlineType;
+use App\Enum\RiskLevel;
 use App\Repository\DeadlineRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -39,6 +40,9 @@ class Deadline
     #[ORM\ManyToOne(inversedBy: 'deadlines')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?FundingProject $fundingProject = null;
+
+    #[ORM\Column(type: 'string', length: 20, enumType: RiskLevel::class, options: ['default' => 'low'])]
+    private RiskLevel $riskLevel = RiskLevel::LOW;
 
     public function __construct()
     {
@@ -95,6 +99,17 @@ class Deadline
     {
         $this->fundingProject = $fundingProject;
 
+        return $this;
+    }
+
+    public function getRiskLevel(): RiskLevel
+    {
+        return $this->riskLevel;
+    }
+
+    public function setRiskLevel(RiskLevel $riskLevel): self
+    {
+        $this->riskLevel = $riskLevel;
         return $this;
     }
 }
