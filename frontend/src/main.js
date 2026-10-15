@@ -1,5 +1,5 @@
 import "./style.css";
-import { fetchFundingProjects, createFundingProject } from "./api.js";
+import { fetchFundingProjects, createFundingProject, analyzeProjectText } from "./api.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     const listContainer = document.getElementById("project-list");
@@ -53,3 +53,26 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 });
+
+export function initAnalysisForm(projectId) {
+    const form = document.getElementById('ki-analysis-form');
+    const textArea = document.getElementById('ki-guideline-text');
+    const submitBtn = document.getElementById('ki-submit-btn');
+
+    if (!form) return;
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Analysiere...';
+
+        try {
+            await analyzeProjectText(projectId, textArea.value);
+            window.location.reload();
+        } catch (err) {
+            alert(err.message);
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Analyse starten';
+        }
+    });
+}

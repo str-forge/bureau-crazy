@@ -36,3 +36,19 @@ export async function createFundingProject(projectData) {
         throw error;
     }
 }
+
+export async function analyzeProjectText(projectId, textPayload) {
+    const response = await fetch(`/api/v1/projects/${projectId}/analyze`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: textPayload }),
+    });
+
+    if (!response.ok) {
+        throw new Error('Fehler bei der KI-Analyse des Projekts.');
+    }
+
+    return response.json();
+}
