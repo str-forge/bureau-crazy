@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
-// Pfad zeigt sauber zurück ins src-Verzeichnis unter Umgehung der API
+// Resolve the path to the src directory while bypassing the API
 vi.mock("../src/api.js", () => ({
     fetchFundingProjects: vi.fn().mockResolvedValue([
         { id: "uuid-123", title: "Test Projekt", budgetInCents: 5000000 }
@@ -12,7 +12,7 @@ describe("Frontend Dashboard UI Grid", () => {
     beforeEach(() => {
         vi.resetModules();
 
-        // Deterministische Mock-Antwort für das Nachladen der Fristen
+        // Deterministic mock response for loading deadlines
         const mockFetch = vi.fn().mockResolvedValue({
             ok: true,
             json: () => Promise.resolve({
@@ -25,11 +25,11 @@ describe("Frontend Dashboard UI Grid", () => {
             })
         });
 
-        // Best Practice: Beide Scopes (Node & JSDOM Window) lückenlos abdecken
+        // Cover both scopes (Node and JSDOM window) completely
         global.fetch = mockFetch;
         window.fetch = mockFetch;
 
-        // Simuliere die exakte DOM-Struktur aus der index.html
+        // Simulate the exact DOM structure from index.html
         document.body.innerHTML = `
       <div id="project-list"></div>
       <form id="project-form">
@@ -52,7 +52,7 @@ describe("Frontend Dashboard UI Grid", () => {
 
         await vi.waitFor(() => {
             const card = document.querySelector(".project-card");
-            if (!card) throw new Error("Projektkarte noch nicht gerendert");
+            if (!card) throw new Error("Project card has not been rendered yet");
         }, { timeout: 1000, interval: 20 });
 
         const card = document.querySelector(".project-card");
@@ -62,13 +62,13 @@ describe("Frontend Dashboard UI Grid", () => {
         expect(card).toBeTruthy();
         expect(submitBtn.disabled).toBe(true);
 
-        // Klick simulieren -> Nutzt jetzt den sauberen window.fetch-Stub
+        // Simulate a click using the window.fetch stub
         card.click();
 
         expect(submitBtn.disabled).toBe(false);
         expect(inputId.value).toBe("uuid-123");
 
-        // Validieren, dass die Fristen-Erweiterung im DOM erfolgreich gerendert wurde
+        // Verify that the deadline expansion was rendered successfully in the DOM
         await vi.waitFor(() => {
             const extension = card.querySelector(".deadlines-extension");
             expect(extension.innerHTML).toContain("Frist 1");

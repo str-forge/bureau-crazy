@@ -51,7 +51,7 @@ class SecurityManager
         $timeSlice = (int) floor(time() / 30);
         $timeBinary = pack('N*', 0) . pack('N*', $timeSlice);
         $hash = hash_hmac('sha1', $timeBinary, $bytes, true);
-        $offset = ord($hash[19]) & 0xf; // Holt das letzte Byte (Index 19)
+        $offset = ord($hash[19]) & 0xf; // Get the last byte (index 19)
         $calculatedCode = (((ord($hash[$offset]) & 0x7f) << 24) |
          ((ord($hash[$offset + 1]) & 0xff) << 16) |
          ((ord($hash[$offset + 2]) & 0xff) << 8) |
@@ -82,7 +82,7 @@ class SecurityManager
 
         $timeSlice = (int) floor(time() / 30);
 
-        // Toleranz-Check: Aktuelles Zeitfenster sowie 1 Vorheriges prüfen
+        // Check the current time window and one previous window for tolerance
         for ($i = -1; $i <= 0; $i++) {
             $timeBinary = pack('N*', 0) . pack('N*', $timeSlice + $i);
             $hash = hash_hmac('sha1', $timeBinary, $bytes, true);

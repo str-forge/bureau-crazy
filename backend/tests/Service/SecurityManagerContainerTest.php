@@ -14,7 +14,7 @@ class SecurityManagerContainerTest extends KernelTestCase
         self::bootKernel();
         $container = self::getContainer();
 
-        // Prüft, ob das Autowiring und die Parameter-Injektion konfiguriert sind
+        // Verify that autowiring and parameter injection are configured
         $manager = $container->get(SecurityManager::class);
 
         $this->assertInstanceOf(SecurityManager::class, $manager);

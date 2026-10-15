@@ -23,7 +23,7 @@ class FundingProject
     private string $title = '';
 
     #[ORM\Column(type: Types::INTEGER)]
-    private int $budget = 0; // Speicherung in Cent (z.B. 500000 = 5000,00 €)
+    private int $budget = 0; // Stored in cents (e.g. 500000 = 5000.00 EUR)
 
     /**
      * @var Collection<int, Deadline>
@@ -39,7 +39,7 @@ class FundingProject
 
     public function __construct()
     {
-        // Wir generieren die zeitlich sortierbare UUIDv7 direkt im Konstruktor
+        // Generate the time-sortable UUIDv7 directly in the constructor
         $this->id = (string) new UuidV7();
         $this->deadlines = new ArrayCollection();
     }

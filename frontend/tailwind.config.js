@@ -7,8 +7,8 @@ export default {
   theme: {
     extend: {
       screens: {
-        'mobile': '320px',   // Optimierung für schmale Smartphones
-        'tablet': '768px',   // Tablets im Hochformat
+        'mobile': '320px', // Optimize for narrow smartphones
+        'tablet': '768px', // Portrait tablets
         'desktop': '1024px', // Standard Desktop-Monitore
       },
     },

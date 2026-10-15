@@ -1,2 +1,2 @@
-// Leerer Stub, um den PostCSS/Tailwind-Compiler in Testumgebungen zu umgehen
+// Empty stub to bypass the PostCSS/Tailwind compiler in test environments
 export default {};

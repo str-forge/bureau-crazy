@@ -32,11 +32,11 @@ class Deadline
     )]
     private ?\DateTimeImmutable $dueDate = null;
 
-    // Das native PHP-Enum gemappt für Doctrine
+    // Map the native PHP enum for Doctrine
     #[ORM\Column(length: 50, enumType: DeadlineType::class)]
     private ?DeadlineType $type = null;
 
-    // Die ManyToOne-Beziehung: Eine Frist gehört immer zu genau einem Projekt
+    // ManyToOne relationship: each deadline belongs to exactly one project
     #[ORM\ManyToOne(inversedBy: 'deadlines')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?FundingProject $fundingProject = null;
@@ -46,7 +46,7 @@ class Deadline
 
     public function __construct()
     {
-        $this->id = new UuidV7(); // UUIDv7 wird im Konstruktor generiert
+        $this->id = new UuidV7(); // Generate the UUIDv7 in the constructor
     }
 
     public function getId(): ?UuidV7

@@ -41,7 +41,7 @@ class AnalysisServiceTest extends KernelTestCase
                 'title' => 'Zwischennachweis 2026',
                 'date' => '2026-12-31',
                 'type' => 'progress_report',
-                'risk_level' => 'high' // NEU
+                'risk_level' => 'high' // New
             ]]
         ];
 

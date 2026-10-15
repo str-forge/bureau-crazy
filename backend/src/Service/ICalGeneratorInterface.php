@@ -9,8 +9,8 @@ use App\Entity\FundingProject;
 interface ICalGeneratorInterface
 {
     /**
-     * Generiert einen standardisierten RFC 5545 iCalendar-String
-     * aus den Fristen eines Förderprojekts.
+     * Generate a standardized RFC 5545 iCalendar string
+     * from the deadlines of a funded project.
      */
     public function generateForProject(FundingProject $project): string;
 }

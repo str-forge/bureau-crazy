@@ -30,8 +30,8 @@ class FundingProjectRepositoryTest extends KernelTestCase
 
     public function testPersistAndRetrieveProject(): void
     {
-        // Falls dein Konstruktor Argumente schluckt, ist das okay.
-        // Zur Sicherheit setzen wir die Werte über die Setter fest:
+        // It is fine if your constructor accepts arguments.
+        // Set the values through the setters to be safe:
         $project = new FundingProject();
         $project->setTitle('Muster-NGO Digitalisierung');
         $project->setBudget(500000);
@@ -54,11 +54,11 @@ class FundingProjectRepositoryTest extends KernelTestCase
         $project->setTitle('Fördertopf Klima');
         $project->setBudget(1200000);
 
-        // Instanziierung ohne Argumente, Befüllung via Setter
+        // Instantiate without arguments and populate through setters
         $deadline = new Deadline();
         $deadline->setTitle('Zwischenbericht');
         $deadline->setDueDate(new \DateTimeImmutable('+1 month'));
-        $deadline->setType(DeadlineType::PROGRESS_REPORT); // Hier dein Enum nutzen!
+        $deadline->setType(DeadlineType::PROGRESS_REPORT); // Use your enum here!
 
         $project->addDeadline($deadline);
 

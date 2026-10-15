@@ -6,7 +6,7 @@ parameters:
     treatPhpDocTypesAsCertain: true
     reportUnmatchedIgnoredErrors: true
     
-    # NEU: Verhindert, dass PHPStan geänderte Entity-Zustände fälschlicherweise als "immer gleich" cached
+    # Prevent PHPStan from incorrectly caching changed entity states as "always the same"
     rememberPossiblyImpureFunctionValues: false
 
     ignoreErrors: []

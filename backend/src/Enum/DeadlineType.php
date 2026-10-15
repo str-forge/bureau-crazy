@@ -6,8 +6,8 @@ namespace App\Enum;
 
 enum DeadlineType: string
 {
-    case FINANCIAL_REPORT = 'financial_report'; // Verwendungsnachweis / Finanzbericht
-    case PROGRESS_REPORT = 'progress_report';   // Sachbericht / Zwischenbericht
-    case DISBURSEMENT_REQUEST = 'disbursement_request'; // Mittelabruf
-    case INQUIRY_RESPONSE = 'inquiry_response'; // Rückmeldung an den Geldgeber
+    case FINANCIAL_REPORT = 'financial_report'; // Financial report / expenditure statement
+    case PROGRESS_REPORT = 'progress_report';   // Progress report / interim report
+    case DISBURSEMENT_REQUEST = 'disbursement_request'; // Disbursement request
+    case INQUIRY_RESPONSE = 'inquiry_response'; // Response to the funding provider
 }

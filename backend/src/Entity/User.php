@@ -34,7 +34,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $totpSecret = null;
 
-    // Neue Felder für die TDD-Anforderung der Kontosperrung
+    // New fields required for account-lockout behavior in TDD
     #[ORM\Column(type: 'integer')]
     private int $failed2faAttempts = 0;
 
@@ -109,7 +109,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return !empty($this->totpSecret);
     }
 
-    // Neue TDD-Business-Logik-Methoden
+    // New business logic methods introduced through TDD
     public function isLocked(): bool
     {
         return $this->isLocked;

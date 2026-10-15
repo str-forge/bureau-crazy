@@ -34,16 +34,16 @@ class DeadlineTest extends KernelTestCase
 
     public function testDeadlineValidationFailsWhenDueDateIsInThePast(): void
     {
-        // 1. Arrange: Symfony Kernel statisch booten
+        // 1. Arrange: boot the Symfony kernel statically
         self::bootKernel();
 
-        // Den Service-Container statisch über self:: abrufen
+        // Access the service container statically through self::
         $validator = self::getContainer()->get('validator');
 
         $project = new FundingProject();
         $deadline = new Deadline();
 
-        // Ein Datum in der Vergangenheit (gestern)
+        // A date in the past (yesterday)
         $pastDate = new \DateTimeImmutable('-1 day');
 
         $deadline->setTitle('Abgabe Zwischenbericht')
@@ -51,13 +51,13 @@ class DeadlineTest extends KernelTestCase
             ->setType(\App\Enum\DeadlineType::PROGRESS_REPORT)
             ->setFundingProject($project);
 
-        // 2. Act: Validierung ausführen
+        // 2. Act: run validation
         $errors = $validator->validate($deadline);
 
-        // 3. Assert: Wir erwarten exakt einen Validierungsfehler
+        // 3. Assert: expect exactly one validation error
         $this->assertCount(1, $errors, 'Der Validator hätte das Datum in der Vergangenheit blockieren müssen.');
 
-        // Wir prüfen, ob die Fehlermeldung mit unserem Text übereinstimmt
+        // Verify that the error message matches the expected text
         $this->assertSame(
             'Das Frist-Datum darf nicht in der Vergangenheit liegen.',
             $errors->get(0)->getMessage()

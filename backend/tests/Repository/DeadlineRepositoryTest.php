@@ -12,55 +12,55 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class DeadlineRepositoryTest extends KernelTestCase
 {
-    // Hier deklarieren wir die Property sauber als Nullable-Interface
+    // Declare the property as a nullable interface
     private ?EntityManagerInterface $entityManager = null;
 
     protected function setUp(): void
     {
-        // Erst den Symfony-Kernel booten, um Zugriff auf Dependency Injection zu haben
+        // Boot the Symfony kernel first to access dependency injection
         self::bootKernel();
 
         $container = self::getContainer();
 
-        // RFC-Fix: Zuweisung direkt auf die Klassen-Eigenschaft!
+        // RFC fix: assign directly to the class property
         $this->entityManager = $container->get(EntityManagerInterface::class);
     }
 
     public function testPersistAndRetrieveDeadlineWithEnumAndProject(): void
     {
-        // 1. Arrange: Valides Projekt mit den Pflichtfeldern von Tag 1 erstellen
+        // 1. Arrange: create a valid project with the required fields
         $project = new FundingProject();
 
-        // Die zu testende Deadline instanziieren und konfigurieren
+        // Instantiate and configure the deadline under test
         $deadline = new Deadline();
         $deadline->setTitle('Zweiter Zwischennachweis')
          ->setDueDate(new \DateTimeImmutable('+60 days'))
          ->setType(DeadlineType::PROGRESS_REPORT)
          ->setFundingProject($project);
 
-        // 2. Act: Daten in die echte PostgreSQL-Datenbank schreiben
+        // 2. Act: write data to the actual PostgreSQL database
         $this->entityManager->persist($project);
         $this->entityManager->persist($deadline);
         $this->entityManager->flush();
 
-        // Wir merken uns die ID für den anschließenden, frischen Abruf
+        // Save the ID for the subsequent fresh retrieval
         $deadlineId = $deadline->getId();
 
-        // EntityManager komplett leeren. Das zwingt Doctrine dazu, die Entity
-        // via SQL 'SELECT' frisch aus PostgreSQL zu laden, statt aus dem RAM-Cache.
+        // Clear the EntityManager completely. This forces Doctrine to load the
+        // entity from PostgreSQL with a fresh SQL 'SELECT' instead of the RAM cache.
         $this->entityManager->clear();
 
-        // 3. Assert: Auslesen aus der DB und Datenkonsistenz verifizieren
+        // 3. Assert: read from the database and verify data consistency
         /** @var Deadline|null $retrievedDeadline */
         $retrievedDeadline = $this->entityManager->getRepository(Deadline::class)->find($deadlineId);
 
-        // Überprüfungen auf Herz und Nieren
+        // Thoroughly validate the result
         $this->assertNotNull($retrievedDeadline, 'Die Deadline wurde nicht in der Datenbank gefunden.');
         $this->assertSame('Zweiter Zwischennachweis', $retrievedDeadline->getTitle());
         $this->assertSame(DeadlineType::PROGRESS_REPORT, $retrievedDeadline->getType());
         $this->assertEquals($deadlineId, $retrievedDeadline->getId());
 
-        // Prüfen, ob die Verknüpfung zum Projekt auf DB-Ebene steht
+        // Verify that the project relationship exists at the database level
         $this->assertNotNull($retrievedDeadline->getFundingProject());
         $this->assertEquals($project->getId(), $retrievedDeadline->getFundingProject()->getId());
     }

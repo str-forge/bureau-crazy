@@ -41,7 +41,7 @@ class FundingProjectController
         $this->entityManager->persist($project);
         $this->entityManager->flush();
 
-        // Universelles, robustes String-Casting der UUID
+        // Universal, robust string casting of the UUID
         $idString = (string) $project->getId();
 
         $responseData = [

@@ -27,14 +27,14 @@ class DeadlineController
     #[Route('', name: 'api_v1_deadlines_create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
-        // 1. JSON-Payload auslesen und fallbacksicher parsen
+        // 1. Read the JSON payload and parse it with a safe fallback
         $content = json_decode($request->getContent(), true);
 
         if (!is_array($content)) {
             $content = $request->request->all();
         }
 
-        // API-Schutzschalter vor dem Verarbeiten
+        // Apply API guard clauses before processing
         if (empty($content) || empty($content['project_id']) || empty($content['title'])) {
             return new JsonResponse(
                 ['error' => 'Ungültige Daten, Projekt-ID oder Titel fehlt.'],
@@ -42,29 +42,29 @@ class DeadlineController
             );
         }
 
-        // 2. String-ID in ein echtes Uuid-Objekt für Doctrine zurückverwandeln
+        // 2. Convert the string ID back to a Uuid object for Doctrine
         try {
             $projectUuid = Uuid::fromString($content['project_id']);
         } catch (\InvalidArgumentException $e) {
             return new JsonResponse(['error' => 'Ungültiges UUID-Format.'], Response::HTTP_BAD_REQUEST);
         }
 
-        // Zugehöriges Projekt aus PostgreSQL laden
+        // Load the associated project from PostgreSQL
         $project = $this->entityManager->getRepository(FundingProject::class)->find($projectUuid);
         if (!$project) {
             return new JsonResponse(['error' => 'Das angegebene Projekt existiert nicht.'], Response::HTTP_NOT_FOUND);
         }
 
-        // 3. Neue Deadline instanziieren und befüllen
+        // 3. Instantiate and populate a new deadline
         $deadline = new Deadline();
         $deadline->setTitle($content['title']);
 
-        // Datum aus ISO-8601-String konvertieren
+        // Convert the date from an ISO 8601 string
         if (!empty($content['due_date'])) {
             $deadline->setDueDate(new \DateTimeImmutable($content['due_date']));
         }
 
-        // Enum-Typ fehlertolerant (Groß-/Kleinschreibung) mappen
+        // Map the enum type case-insensitively
         if (!empty($content['type'])) {
             $typeString = strtolower($content['type']);
             $typeEnum = DeadlineType::tryFrom($typeString);
@@ -78,10 +78,10 @@ class DeadlineController
             }
         }
 
-        // Relation setzen
+        // Set the relationship
         $deadline->setFundingProject($project);
 
-        // 4. 🔥 API-Validierung: Die Domänen-Schutzregeln triggern
+        // 4. 🔥 API validation: enforce the domain constraints
         $violations = $this->validator->validate($deadline);
         if (count($violations) > 0) {
             $errors = [];
@@ -91,11 +91,11 @@ class DeadlineController
             return new JsonResponse(['errors' => $errors], Response::HTTP_BAD_REQUEST);
         }
 
-        // 5. Speichern
+        // 5. Persist
         $this->entityManager->persist($deadline);
         $this->entityManager->flush();
 
-        // 6. JSON-Response für das Frontend generieren
+        // 6. Generate the JSON response for the frontend
         $deadlineIdString = $deadline->getId();
         $projectIdString = $project->getId();
 

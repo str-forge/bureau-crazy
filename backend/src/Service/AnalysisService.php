@@ -27,11 +27,11 @@ class AnalysisService
             $deadline->setTitle($extracted['title'] ?? 'Unbenannte Frist');
             $deadline->setDueDate(new \DateTimeImmutable($extracted['date'] ?? 'now'));
 
-            // Fallback auf PROGRESS_REPORT, falls die KI einen unklaren String liefert
+            // Fall back to PROGRESS_REPORT if the AI returns an unrecognized string
             $type = DeadlineType::tryFrom($extracted['type'] ?? '') ?? DeadlineType::PROGRESS_REPORT;
             $deadline->setType($type);
 
-            // Risiko-Level zuweisen
+            // Assign the risk level
             $riskStr = $extracted['risk_level'] ?? 'low';
             $risk = RiskLevel::tryFrom($riskStr) ?? RiskLevel::LOW;
             $deadline->setRiskLevel($risk);

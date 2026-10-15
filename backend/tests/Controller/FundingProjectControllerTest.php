@@ -62,25 +62,25 @@ class FundingProjectControllerTest extends WebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
 
-        // 1. Ein Testprojekt direkt über die API anlegen (POST)
+        // 1. Create a test project directly through the API (POST)
         $client->request('POST', '/api/v1/projects', [], [], [
             'CONTENT_TYPE' => 'application/json',
             'HTTP_ACCEPT' => 'application/json'
         ], json_encode([
             'title' => 'SPA Test-Förderung',
-            'budget' => 12500000,          // Variante 1 (Tag 3 Default)
-            'budget_in_cents' => 12500000, // Variante 2 (Tag 1 Fallback)
-            'budgetInCents' => 12500000    // Variante 3 (Vite SPA)
+            'budget' => 12500000,          // Variant 1 (day 3 default)
+            'budget_in_cents' => 12500000, // Variant 2 (day 1 fallback)
+            'budgetInCents' => 12500000    // Variant 3 (Vite SPA)
         ]));
 
         $this->assertResponseStatusCodeSame(201);
 
-        // Zwinge Doctrine, den First-Level-Cache im Test zu leeren,
-        // damit der nachfolgende GET-Request die echten DB-Daten hydriert!
+        // Force Doctrine to clear the first-level cache in the test,
+        // so the following GET request hydrates the actual database data!
         $entityManager = static::getContainer()->get('doctrine')->getManager();
         $entityManager->clear();
 
-         // 2. Die Liste abrufen (GET)
+        // 2. Retrieve the list (GET)
         $client->request('GET', '/api/v1/projects', [], [], [
             'HTTP_ACCEPT' => 'application/json'
         ]);
@@ -88,13 +88,13 @@ class FundingProjectControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('Content-Type', 'application/json');
 
-        // 3. Inhalt der JSON-Antwort validieren
+        // 3. Validate the JSON response content
         $projects = json_decode($client->getResponse()->getContent(), true);
 
         $this->assertIsArray($projects);
         $this->assertNotEmpty($projects);
 
-        // Wir suchen gezielt nach unserem eben erstellten Projekt im Array
+        // Find the newly created project in the array
         $foundProject = null;
         foreach ($projects as $project) {
             if ($project['title'] === 'SPA Test-Förderung') {
@@ -103,10 +103,10 @@ class FundingProjectControllerTest extends WebTestCase
             }
         }
 
-        // Sicherstellen, dass das Projekt in der API-Liste aufgetaucht ist
+        // Ensure that the project appears in the API list
         $this->assertNotNull($foundProject, 'Das neu angelegte Projekt wurde in der GET-Liste nicht gefunden!');
 
-        // Die exakte Struktur für das Frontend validieren
+        // Validate the exact structure expected by the frontend
         $this->assertArrayHasKey('id', $foundProject);
         $this->assertArrayHasKey('title', $foundProject);
         $this->assertArrayHasKey('budgetInCents', $foundProject);

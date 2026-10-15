@@ -13,9 +13,9 @@ if (file_exists(dirname(__DIR__) . '/config/bootstrap.php')) {
 // ============================================================================
 // AUTOMATISIERUNG (DX): Beseitigung veralteter Validierungs- & Entity-Metadaten
 // ============================================================================
-// Löscht das Test-Cache-Verzeichnis physisch vom Datenträger, noch bevor der
-// Symfony-Kernel für die Tests hochfährt. Dadurch wird erzwungen, dass alle
-// PHP 8.3 Attribute bei jedem Testlauf zu 100% frisch eingelesen werden.
+// Physically remove the test cache directory before the Symfony kernel boots
+// for tests. This ensures that all PHP 8.3 attributes are freshly loaded on
+// every test run.
 if (isset($_SERVER['APP_ENV']) && $_SERVER['APP_ENV'] === 'test') {
     $testCacheDir = dirname(__DIR__) . '/var/cache/test';
     if (is_dir($testCacheDir)) {

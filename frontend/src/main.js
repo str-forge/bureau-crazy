@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     extensionContainer.innerHTML = renderDeadlinesHtml(data.deadlines);
                 } catch (err) {
-                    console.error("Fehler beim Nachladen der Fristen", err);
+                    console.error("Failed to load deadlines", err);
                 }
             });
         });

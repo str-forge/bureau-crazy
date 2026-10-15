@@ -2,7 +2,7 @@ const API_BASE_URL = "http://localhost:8080/api/v1";
 
 export async function fetchFundingProjects() {
     try {
-        // Korrigiert auf deinen echten Symfony-Pfad /projects
+        // Corrected to the actual Symfony path /projects
         const response = await fetch(`${API_BASE_URL}/projects`, {
             method: "GET",
             headers: {
@@ -20,7 +20,7 @@ export async function fetchFundingProjects() {
 
 export async function createFundingProject(projectData) {
     try {
-        // Korrigiert auf deinen echten Symfony-Pfad /projects
+        // Corrected to the actual Symfony path /projects
         const response = await fetch(`${API_BASE_URL}/projects`, {
             method: "POST",
             headers: {

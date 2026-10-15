@@ -11,7 +11,7 @@ class FundingProjectTest extends TestCase
 {
     public function testCanInstantiateFundingProjectWithCoreFields(): void
     {
-        // Da die Klasse noch nicht existiert, MUSS das in ein TDD-Rot laufen!
+        // Since the class does not exist yet, this MUST fail in the TDD red phase!
         $project = new FundingProject();
 
         $project->setTitle('Digitalisierung NGO');
