@@ -1,4 +1,4 @@
-.PHONY: up down status test test-file test-db-fresh composer-require cache-clear db-migrate lint lint-fix phpstan check frontend-install frontend-dev frontend-logs frontend-fmt fix-perms
+.PHONY: up down status test test-file test-db-fresh composer-require cache-clear db-migrate lint lint-fix phpstan check frontend-install frontend-dev frontend-logs frontend-fmt frontend-test fix-perms
 
 # ==============================================================================
 # 🐋 CONTAINER LIFECYCLE
@@ -62,7 +62,7 @@ phpstan:
 	docker compose exec -w /var/www/html/backend php vendor/bin/phpstan analyse -c phpstan.dist.neon
 
 # Startet die vollständige Pipeline (Linter, Typenanalyse und Testsuite) vor dem Commit
-check: lint phpstan test
+check: lint phpstan test frontend-test
 
 # ==============================================================================
 # 🪐 FRONTEND (Vite / Node / Tailwind)
@@ -76,6 +76,10 @@ frontend-install:
 # Startet den Vite Entwicklungs-Server im Vordergrund (falls man Hot-Reload Logs sehen will)
 frontend-dev:
 	docker compose exec -w /app frontend npm run dev
+
+# Startet die Frontend-Testsuite über Vitest im isolierten Pfad
+frontend-test:
+	docker compose exec -w /app frontend npm run test
 
 # Zeigt die Live-Logs des Frontend-Containers an (perfekt zum Debuggen von Vite-Ausfällen)
 frontend-logs:
