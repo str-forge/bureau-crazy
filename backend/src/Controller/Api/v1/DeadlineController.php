@@ -96,23 +96,18 @@ class DeadlineController
         $this->entityManager->flush();
 
         // 6. JSON-Response für das Frontend generieren
-        $deadlineId = $deadline->getId();
-        $deadlineId = is_object($deadlineId) && method_exists($deadlineId, 'toRfc4122')
-            ? $deadlineId->toRfc4122()
-            : (string) $deadlineId;
-
-        $projectId = $project->getId();
-        $projectId = is_object($projectId) && method_exists($projectId, 'toRfc4122')
-            ? $projectId->toRfc4122()
-            : (string) $projectId;
+        $deadlineIdString = $deadline->getId();
+        $projectIdString = $project->getId();
 
         $responseData = [
-            'id' => $deadlineId,
+            'id' => $deadlineIdString,
             'title' => $deadline->getTitle(),
             'due_date' => $deadline->getDueDate()->format(\DateTimeInterface::ATOM),
             'type' => $deadline->getType()->value,
-            'project_id' => $projectId
+            'project_id' => $projectIdString,
+            'risk_level' => $deadline->getRiskLevel()->value
         ];
+
 
         return new JsonResponse($responseData, Response::HTTP_CREATED);
     }

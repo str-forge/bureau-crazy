@@ -31,15 +31,6 @@ class DeadlineRepositoryTest extends KernelTestCase
         // 1. Arrange: Valides Projekt mit den Pflichtfeldern von Tag 1 erstellen
         $project = new FundingProject();
 
-        // HINWEIS: Falls du an Tag 1 spezifische Setter wie setName() oder setTitle()
-        // definiert hast, passe diese hier an deine Entität an!
-        if (method_exists($project, 'setTitle')) {
-            $project->setTitle('Test NGO Projekt');
-        }
-        if (method_exists($project, 'setBudgetInCents')) {
-            $project->setBudgetInCents(5000000); // 50.000,00 € Cent-basiert
-        }
-
         // Die zu testende Deadline instanziieren und konfigurieren
         $deadline = new Deadline();
         $deadline->setTitle('Zweiter Zwischennachweis')

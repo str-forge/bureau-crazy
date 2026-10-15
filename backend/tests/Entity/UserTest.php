@@ -15,7 +15,7 @@ class UserTest extends TestCase
 
         $this->assertSame('dev@ngo.de', $user->getEmail());
         $this->assertContains('ROLE_USER', $user->getRoles());
-        $this->assertNotNull($user->getId());
+        $this->assertInstanceOf(\Symfony\Component\Uid\Uuid::class, $user->getId());
     }
 
     public function testTotpSecretActivation(): void

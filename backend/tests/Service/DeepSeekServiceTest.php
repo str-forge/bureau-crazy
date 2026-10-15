@@ -37,7 +37,6 @@ class DeepSeekServiceTest extends TestCase
 
         $result = $service->extractDeadlines('Richtlinie für digitale Förderung...');
 
-        $this->assertIsArray($result);
         $this->assertSame('Zwischenbericht einreichen', $result['title']);
         $this->assertSame(30, $result['days_until_due']);
         $this->assertSame('PROGRESS_REPORT', $result['type']);
